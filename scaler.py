@@ -12,20 +12,27 @@ SCALES = {
     "locrian": [1, 2, 2, 1, 2, 2, 2],
 }
 
-NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+# Define notes
+NOTES_FLATS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B']
+NOTES_SHARPS = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
-def generate_scale(root_note, pattern):
-    """Generates a scale based on the root note and interval pattern."""
+def generate_scale(root_note, pattern, use_sharps):
+    """Generates a scale based on the root note, interval pattern, and notation."""
+    notes = NOTES_SHARPS if use_sharps else NOTES_FLATS
     scale = [root_note]
-    note_index = NOTES.index(root_note)
+    note_index = notes.index(root_note)
     for step in pattern:
-        note_index = (note_index + step) % len(NOTES)
-        scale.append(NOTES[note_index])
+        note_index = (note_index + step) % len(notes)
+        scale.append(notes[note_index])
     return scale
 
 def random_note():
-    """Returns a random note from the chromatic scale."""
-    return random.choice(NOTES)
+    """Returns a random note."""
+    return random.choice(NOTES_FLATS)
+
+def random_notation():
+    """Randomly decide between using flats or sharps."""
+    return random.choice([True, False])  # True for sharps, False for flats
 
 def main():
     parser = argparse.ArgumentParser(
@@ -42,26 +49,59 @@ def main():
         "-n", "--note",
         type=str,
         help="Specify a root note (default: random).",
-        choices=NOTES,
+        choices=NOTES_FLATS + NOTES_SHARPS,
+    )
+    parser.add_argument(
+        "-sf", "--sharps",
+        action="store_true",
+        help="Display notes using sharps."
+    )
+    parser.add_argument(
+        "-fl", "--flats",
+        action="store_true",
+        help="Display notes using flats."
+    )
+    parser.add_argument(
+        "-r", "--random-notation",
+        action="store_true",
+        help="Randomly choose flats or sharps."
     )
     args = parser.parse_args()
 
-    # Determine the root note
-    root_note = args.note if args.note else random_note()
+    while True:
+        # Determine the root note
+        root_note = args.note if args.note else random_note()
 
-    # Get the selected scale pattern
-    scale_pattern = SCALES.get(args.scale)
+        # Determine notation (sharps or flats)
+        if args.random_notation:
+            use_sharps = random_notation()
+        elif args.sharps:
+            use_sharps = True
+        elif args.flats:
+            use_sharps = False
+        else:
+            use_sharps = False  # Default to flats
 
-    # Generate and display the scale
-    scale = generate_scale(root_note, scale_pattern)
-    print(f"\nRoot Note: {root_note}")
-    print(f"Scale ({args.scale.capitalize()}): {' '.join(scale)}")
+        # Get the selected scale pattern
+        scale_pattern = SCALES.get(args.scale)
 
-    # Prompt for next action
-    input("\nPress Enter for another scale or Ctrl+C to exit.\n")
+        # Display the root note
+        print(f"\nRoot Note: {root_note}")
+        action = input("Press any key to see the scale, or 'q'/'Esc' to quit: ").strip().lower()
 
-    # Restart with a new random note
-    main()
+        if action in ['q', '\x1b']:  # Quit on 'q' or 'Esc'
+            print("\nExiting. Goodbye!")
+            break
+
+        # Display the scale
+        scale = generate_scale(root_note, scale_pattern, use_sharps)
+        print(f"Scale ({args.scale.capitalize()}): {' '.join(scale)}")
+
+        # Ask for next input
+        action = input("\nPress any key for another key or 'q'/'Esc' to exit: ").strip().lower()
+        if action in ['q', '\x1b']:
+            print("\nExiting. Goodbye!")
+            break
 
 if __name__ == "__main__":
     main()
