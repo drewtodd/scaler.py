@@ -1,0 +1,69 @@
+# macOS files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# macOS Finder attributes
+Icon?
+._*
+
+# macOS specific temporary files
+.Spotlight-V100
+.Trashes
+._*
+
+# macOS directory service store files
+Desktop.ini
+
+# Python virtual environments
+env/
+venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Python logs
+*.log
+*.sqlite3
+
+# Test results
+.coverage
+*.cover
+.cache/
+*.pytest_cache/
+
+# Packages
+*.egg
+*.egg-info/
+dist/
+build/
+pip-wheel-metadata/
+
+# Environment variables
+.env
+.env.*
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*.bak
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Coverage reports
+htmlcov/
+
+# Git metadata
+*.orig
+*.rej
+
+# Docker
+*.dockerfile
+*.tar.gz
+
+# OS metadata
+Thumbs.db
